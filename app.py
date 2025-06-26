@@ -41,15 +41,25 @@ def process_task11():
     data = request.json
     S = data.get('S', '')
     T = data.get('T', '')
-    
-    words = T.split()
-    word_count = len(words)
-    
+
+    # Clean each word: keep only English letters
+    raw_words = T.split()
+    cleaned_words = [re.sub(r'[^a-zA-Z]', '', word) for word in raw_words]
+    # Remove empty strings
+    cleaned_words = [word for word in cleaned_words if word]
+
+    word_count = len(cleaned_words)
+
+    # For each char in S, list all words starting with that char (case-insensitive)
     words_by_char = {}
     for char in S:
-        words_starting_with_char = [word for word in words if word.lower().startswith(char.lower())]
-        words_by_char[char] = words_starting_with_char
-    
+        if char.isalpha():
+            words_by_char[char] = [
+                word for word in cleaned_words if word.lower().startswith(char.lower())
+            ]
+        else:
+            words_by_char[char] = []
+
     return jsonify({
         'word_count': word_count,
         'words_by_char': words_by_char
