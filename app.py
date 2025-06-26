@@ -61,30 +61,42 @@ def process_task12():
     S = data.get('S', '')
     T = data.get('T', '')
     P = data.get('P', [])
-    
-    words = T.split()
-    original_count = len(words)
-    
-    # Remove stop words
-    filtered_words = [word for word in words if word.lower() not in [p.lower() for p in P]]
-    removed_count = original_count - len(filtered_words)
+
+    # Clean and split text into words containing only English letters
+    raw_words = T.split()
+    stop_words = set(p.lower() for p in P)
+    filtered_words = []
+    removed_count = 0
+
+    for word in raw_words:
+        # Keep only English letters in each word
+        word_clean = re.sub(r'[^a-zA-Z]', '', word)
+        if word_clean.lower() in stop_words or not word_clean:
+            if word_clean:
+                removed_count += 1
+        else:
+            filtered_words.append(word_clean)
     filtered_text = ' '.join(filtered_words)
-    
-    # Find bigrams for words starting with letters in S
+
+    def is_ascii_alpha(s):
+        return all('a' <= c <= 'z' or 'A' <= c <= 'Z' for c in s)
+
     bigrams = []
     for i, word in enumerate(filtered_words):
-        if any(word.lower().startswith(char.lower()) for char in S):
-            # Preceding bigram
+        if word and any(word.lower().startswith(char.lower()) for char in S):
             if i > 0:
-                bigrams.append(f"{filtered_words[i-1]} {word}")
-            # Following bigram
+                bigram_prev = f"{filtered_words[i-1]} {word}"
+                if is_ascii_alpha(filtered_words[i-1]) and is_ascii_alpha(word):
+                    bigrams.append(bigram_prev)
             if i < len(filtered_words) - 1:
-                bigrams.append(f"{word} {filtered_words[i+1]}")
-    
+                bigram_next = f"{word} {filtered_words[i+1]}"
+                if is_ascii_alpha(word) and is_ascii_alpha(filtered_words[i+1]):
+                    bigrams.append(bigram_next)
+
     return jsonify({
         'removed_count': removed_count,
         'filtered_text': filtered_text,
-        'bigrams': bigrams
+        'bigrams': bigrams if bigrams else ['No bigrams found']
     })
 
 if __name__ == '__main__':
