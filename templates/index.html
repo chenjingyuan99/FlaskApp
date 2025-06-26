@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Search Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Document Search Engine</h1>
+            <p>Search through {{ total_documents }} documents from Azure Blob Storage</p>
+            <div class="connection-status">
+                <strong>Status:</strong> {{ connection_status }}
+            </div>
+        </header>
+        
+        <main>
+            {% if total_documents > 0 %}
+            
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Document Search</h2>
+                <form method="POST" action="{{ url_for('search') }}" class="search-form">
+                    <div class="search-box">
+                        <input type="text" name="query" placeholder="Enter your search query..." required>
+                        <button type="submit">Search</button>
+                    </div>
+                </form>
+            </section>
+            
+            <!-- Letter Frequency Analysis Section -->
+            <section class="frequency-section">
+                <h2>Letter Frequency Analysis</h2>
+                <form method="POST" action="{{ url_for('letter_frequency') }}" class="frequency-form">
+                    <div class="frequency-box">
+                        <select name="document_name" id="document_name" required>
+                            <option value="">-- Choose a document --</option>
+                            {% for doc in document_names %}
+                            <option value="{{ doc }}">{{ doc }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Analyze Letters</button>
+                    </div>
+                </form>
+                
+                <div class="frequency-divider">
+                    <span>OR</span>
+                </div>
+                
+                <form method="POST" action="{{ url_for('letter_frequency') }}" class="frequency-form">
+                    <div class="frequency-box">
+                        <input type="text" name="document_name" 
+                               placeholder="Enter exact document name (e.g., Alice.txt)" required>
+                        <button type="submit">Analyze Letters</button>
+                    </div>
+                </form>
+            </section>
+            
+            <div class="info">
+                <h3>Available Documents:</h3>
+                <ul>
+                    {% for doc in document_names %}
+                    <li>{{ doc }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <h3>Features:</h3>
+                <ul>
+                    <li><strong>Search:</strong> Use single words or combinations with fuzzy matching</li>
+                    <li><strong>Letter Analysis:</strong> Count frequency of all 26 letters in any document</li>
+                    <li>Search is case-insensitive with spelling error correction</li>
+                    <li>Results ranked using BM25 algorithm</li>
+                </ul>
+            </div>
+            
+            {% else %}
+            <div class="error-message">
+                <h3>No documents found</h3>
+                <p>Please check your Azure Blob Storage connection and ensure documents are uploaded.</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Letter Frequency Analysis Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Letter Frequency Analysis</h1>
+    </header>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">← Back to Main Page</a>
+    </div>
+
+    <main>
+        {% if error %}
+        <div class="error-message">
+            <h3>Error</h3>
+            <p>{{ error }}</p>
+            {% if available_documents %}
+            <h4>Available documents:</h4>
+            <ul>
+                {% for doc in available_documents %}
+                <li>{{ doc }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        
+        {% elif analysis %}
+        <div class="frequency-results">
+            <div class="analysis-header">
+                <h2>{{ analysis.document }}</h2>
+                <div class="analysis-stats">
+                    <span class="stat">Total Letters: {{ analysis.total_letters }}</span>
+                    <span class="stat">Total Words: {{ analysis.total_words }}</span>
+                </div>
+            </div>
+            
+            <div class="frequency-table">
+                <h3>Letter Frequency Distribution</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Letter</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                            <th>Visual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for letter, data in analysis.frequencies.items() %}
+                        <tr class="{% if data.count == 0 %}zero-count{% endif %}">
+                            <td class="letter">{{ letter.upper() }}</td>
+                            <td class="count">{{ data.count }}</td>
+                            <td class="percentage">{{ data.percentage }}%</td>
+                            <td class="visual">
+                                <div class="frequency-bar">
+                                    <div class="frequency-fill" 
+                                         style="width: {{ data.percentage * 2 }}px; 
+                                                background-color: {% if data.count > 0 %}#3498db{% else %}#ecf0f1{% endif %};">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="frequency-summary">
+                <h3>Top 5 Most Frequent Letters</h3>
+                <div class="top-letters">
+                    {% set top_letters = analysis.frequencies.items() | list %}
+                    {% for letter, data in top_letters[:5] %}
+                    {% if data.count > 0 %}
+                    <div class="top-letter">
+                        <span class="letter-big">{{ letter.upper() }}</span>
+                        <span class="letter-count">{{ data.count }} times</span>
+                        <span class="letter-percent">{{ data.percentage }}%</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+</div>
+</body>
+</html>

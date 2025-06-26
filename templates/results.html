@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuzzy BM25 Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Fuzzy BM25 Search Results</h1>
+        <div class="search-info">
+            <p><strong>Query:</strong> "{{ query }}"</p>
+            <p><strong>Results:</strong> {{ total_results }} documents found in {{ "%.3f"|format(search_time) }} seconds</p>
+            <p><em>Results with fuzzy matching and BM25 scoring</em></p>
+        </div>
+    </header>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}">← Back to Search</a>
+    </div>
+
+    <!-- Fuzzy Matching Info -->
+    {% if fuzzy_info %}
+    <div class="fuzzy-info">
+        <h3>Query Processing:</h3>
+        {% for original, info in fuzzy_info.items() %}
+        <div class="fuzzy-term">
+            <strong>"{{ original }}"</strong> → 
+            {% if info.matches %}
+                {% for match, similarity, match_type in info.matches %}
+                <span class="fuzzy-match {{ match_type }}">
+                    {{ match }} ({{ "%.2f"|format(similarity) }}, {{ match_type }})
+                </span>
+                {% if not loop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                <span class="no-match">No matches found</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% if results %}
+            {% for result in results %}
+            <div class="result-item">
+                <div class="result-summary">
+                    <strong>{{ result.document }}</strong>
+                    &nbsp;|&nbsp;
+                    <span class="bm25-score">BM25: {{ "%.4f"|format(result.bm25_score) }}</span>
+                    &nbsp;|&nbsp;
+                    <span class="matching-rate">{{ "%.1f"|format(result.matching_rate) }}% query match</span>
+                    &nbsp;|&nbsp;
+                    <span class="matches">{{ result.term_occurrences }} occurrences</span>
+                    &nbsp;|&nbsp;
+                    <span class="word-count">{{ result.total_words }} words</span>
+                </div>
+                
+                <div class="match-details">
+                    <p><strong>Query Coverage:</strong> {{ result.query_words_found }}/{{ result.total_query_words }} words found</p>
+                    {% if result.fuzzy_matches_used %}
+                    <p><strong>Fuzzy Matches:</strong> 
+                        {% for fuzzy in result.fuzzy_matches_used %}
+                        <span class="fuzzy-used">{{ fuzzy.original }}→{{ fuzzy.matched }} ({{ fuzzy.type }})</span>
+                        {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                {% if result.matching_lines %}
+                <div class="matching-lines">
+                    <details>
+                        <summary>Show matching lines ({{ result.matching_lines|length }})</summary>
+                        {% for line in result.matching_lines %}
+                        <div class="line-match">
+                            <span class="line-number">Line {{ line.line_number }}:</span>
+                            <span class="line-content">{{ line.content|safe }}</span>
+                        </div>
+                        {% endfor %}
+                    </details>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <h3>No results found</h3>
+                <p>Try different keywords or check your spelling.</p>
+            </div>
+        {% endif %}
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,645 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.search-form {
+    margin-bottom: 30px;
+}
+
+.search-box {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 10px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.search-box button {
+    padding: 12px 24px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.search-box button:hover {
+    background: #2980b9;
+}
+
+.info {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.info h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.info ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.search-info {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.back-link {
+    margin-bottom: 20px;
+}
+
+.back-link a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.result-item {
+    background: white;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+.result-header h3 {
+    color: #2c3e50;
+}
+
+.result-stats {
+    display: flex;
+    gap: 15px;
+}
+
+.result-stats span {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.matching-rate {
+    background: #e74c3c;
+    color: white;
+}
+
+.word-count {
+    background: #95a5a6;
+    color: white;
+}
+
+.matches {
+    background: #27ae60;
+    color: white;
+}
+
+.matching-lines h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.line-match {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-left: 3px solid #3498db;
+}
+
+.line-number {
+    font-weight: bold;
+    color: #7f8c8d;
+    margin-right: 10px;
+}
+
+.line-content {
+    line-height: 1.4;
+}
+
+mark {
+    background: #f1c40f;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.no-results {
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .result-stats {
+        margin-top: 10px;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+
+    .bm25-score {
+    background: #9b59b6;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.match-details {
+    background: #ecf0f1;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+details {
+    margin-top: 10px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 5px 0;
+}
+
+summary:hover {
+    color: #3498db;
+}
+
+}
+
+.fuzzy-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.fuzzy-term {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.fuzzy-match {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.fuzzy-match.exact {
+    background: #28a745;
+    color: white;
+}
+
+.fuzzy-match.fuzzy {
+    background: #ffc107;
+    color: black;
+}
+
+.fuzzy-match.edit_distance {
+    background: #17a2b8;
+    color: white;
+}
+
+.fuzzy-match.transposition {
+    background: #6f42c1;
+    color: white;
+}
+
+.no-match {
+    color: #dc3545;
+    font-style: italic;
+}
+
+.fuzzy-used {
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+mark.fuzzy {
+    background: #ffc107;
+    color: black;
+    font-weight: bold;
+}
+
+mark {
+    background: #28a745;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+/* Frequency Analysis Styles */
+.frequency-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.frequency-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.frequency-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.frequency-box, .frequency-input-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.frequency-box select, .frequency-input-box input {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.frequency-box button, .frequency-input-box button {
+    padding: 8px 16px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.frequency-box button:hover, .frequency-input-box button:hover {
+    background: #c0392b;
+}
+
+/* Search and Frequency Section Consistency */
+.search-section, .frequency-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.search-section h2, .frequency-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Consistent Form Styling */
+.search-form, .frequency-form {
+    margin-bottom: 15px;
+}
+
+.search-box, .frequency-box {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Consistent Input Styling */
+.search-box input, .frequency-box input, .frequency-box select {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    min-height: 20px;
+}
+
+.frequency-box select {
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Consistent Button Styling */
+.search-box button, .frequency-box button {
+    padding: 12px 24px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.search-box button:hover, .frequency-box button:hover {
+    background: #2980b9;
+}
+
+/* Frequency Section Specific Styling */
+.frequency-divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.frequency-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #ddd;
+    z-index: 1;
+}
+
+.frequency-divider span {
+    background: white;
+    padding: 0 15px;
+    color: #7f8c8d;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+/* Frequency Results Styles */
+.frequency-results {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.analysis-header {
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.analysis-header h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.analysis-stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.frequency-table {
+    margin-bottom: 30px;
+}
+
+.frequency-table h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.frequency-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.frequency-table th {
+    background: #34495e;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.frequency-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ecf0f1;
+    text-align: center;
+}
+
+.frequency-table tr:hover {
+    background: #f8f9fa;
+}
+
+.frequency-table tr.zero-count {
+    opacity: 0.5;
+}
+
+.letter {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.count {
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.percentage {
+    color: #8e44ad;
+    font-weight: bold;
+}
+
+.frequency-bar {
+    width: 150px;
+    height: 20px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.frequency-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.frequency-summary {
+    border-top: 2px solid #ecf0f1;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.frequency-summary h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.top-letters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.top-letter {
+    background: #f8f9fa;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.letter-big {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.letter-count {
+    display: block;
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-bottom: 2px;
+}
+
+.letter-percent {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-box, .frequency-box {
+        flex-direction: column;
+        max-width: 100%;
+    }
+    
+    .search-box input, .frequency-box input, .frequency-box select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .search-box button, .frequency-box button {
+        width: 100%;
+    }
+    
+    .analysis-stats {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .top-letters {
+        justify-content: center;
+    }
+    
+    .frequency-table table {
+        font-size: 12px;
+    }
+    
+    .frequency-bar {
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .frequency-table th, .frequency-table td {
+        padding: 8px 6px;
+    }
+    
+    .top-letter {
+        min-width: 60px;
+        padding: 10px;
+    }
+    
+    .letter-big {
+        font-size: 20px;
+    }
+}
+
+
