@@ -3,85 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Search Engine</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Text Processing Tasks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .task { margin: 30px 0; padding: 20px; border: 1px solid #ccc; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; resize: vertical; }
+        input[type="text"] { width: 300px; margin: 10px 0; padding: 5px; }
+        button { padding: 10px 20px; margin: 10px 0; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Document Search Engine</h1>
-            <p>Search through {{ total_documents }} documents from Azure Blob Storage</p>
-            <div class="connection-status">
-                <strong>Status:</strong> {{ connection_status }}
-            </div>
-        </header>
+    <h1>Text Processing Tasks</h1>
+
+    <!-- Task 10 -->
+    <div class="task">
+        <h2>Task 10: Character Analysis and Replacement</h2>
+        <label for="s10">String S (1-10 characters):</label>
+        <input type="text" id="s10" placeholder="Enter string S">
         
-        <main>
-            {% if total_documents > 0 %}
-            
-            <!-- Search Section -->
-            <section class="search-section">
-                <h2>Document Search</h2>
-                <form method="POST" action="{{ url_for('search') }}" class="search-form">
-                    <div class="search-box">
-                        <input type="text" name="query" placeholder="Enter your search query..." required>
-                        <button type="submit">Search</button>
-                    </div>
-                </form>
-            </section>
-            
-            <!-- Letter Frequency Analysis Section -->
-            <section class="frequency-section">
-                <h2>Letter Frequency Analysis</h2>
-                <form method="POST" action="{{ url_for('letter_frequency') }}" class="frequency-form">
-                    <div class="frequency-box">
-                        <select name="document_name" id="document_name" required>
-                            <option value="">-- Choose a document --</option>
-                            {% for doc in document_names %}
-                            <option value="{{ doc }}">{{ doc }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit">Analyze Letters</button>
-                    </div>
-                </form>
-                
-                <div class="frequency-divider">
-                    <span>OR</span>
-                </div>
-                
-                <form method="POST" action="{{ url_for('letter_frequency') }}" class="frequency-form">
-                    <div class="frequency-box">
-                        <input type="text" name="document_name" 
-                               placeholder="Enter exact document name (e.g., Alice.txt)" required>
-                        <button type="submit">Analyze Letters</button>
-                    </div>
-                </form>
-            </section>
-            
-            <div class="info">
-                <h3>Available Documents:</h3>
-                <ul>
-                    {% for doc in document_names %}
-                    <li>{{ doc }}</li>
-                    {% endfor %}
-                </ul>
-                
-                <h3>Features:</h3>
-                <ul>
-                    <li><strong>Search:</strong> Use single words or combinations with fuzzy matching</li>
-                    <li><strong>Letter Analysis:</strong> Count frequency of all 26 letters in any document</li>
-                    <li>Search is case-insensitive with spelling error correction</li>
-                    <li>Results ranked using BM25 algorithm</li>
-                </ul>
-            </div>
-            
-            {% else %}
-            <div class="error-message">
-                <h3>No documents found</h3>
-                <p>Please check your Azure Blob Storage connection and ensure documents are uploaded.</p>
-            </div>
-            {% endif %}
-        </main>
+        <label for="t10">Text T:</label>
+        <textarea id="t10" placeholder="Enter text T"></textarea>
+        
+        <label for="c10">Character C (replacement):</label>
+        <input type="text" id="c10" placeholder="Enter character C">
+        
+        <button onclick="processTask10()">Process Task 10</button>
+        <div id="result10" class="result"></div>
     </div>
+
+    <!-- Task 11 -->
+    <div class="task">
+        <h2>Task 11: Word Analysis</h2>
+        <label for="s11">String S (1-10 characters):</label>
+        <input type="text" id="s11" placeholder="Enter string S">
+        
+        <label for="t11">Text T:</label>
+        <textarea id="t11" placeholder="Enter text T"></textarea>
+        
+        <button onclick="processTask11()">Process Task 11</button>
+        <div id="result11" class="result"></div>
+    </div>
+
+    <!-- Task 12 -->
+    <div class="task">
+        <h2>Task 12: Stop Words and Bigrams</h2>
+        <label for="s12">String S (1-10 characters):</label>
+        <input type="text" id="s12" placeholder="Enter string S">
+        
+        <label for="p12">Stop words P (comma separated, up to 10):</label>
+        <input type="text" id="p12" placeholder="Enter stop words separated by commas">
+        
+        <label for="t12">Text T:</label>
+        <textarea id="t12" placeholder="Enter text T"></textarea>
+        
+        <button onclick="processTask12()">Process Task 12</button>
+        <div id="result12" class="result"></div>
+    </div>
+
+    <script>
+        // Add input validation without interfering with cursor position
+        document.getElementById('s10').addEventListener('input', function(e) {
+            if (e.target.value.length > 10) {
+                e.target.value = e.target.value.slice(0, 10);
+            }
+        });
+
+        document.getElementById('s11').addEventListener('input', function(e) {
+            if (e.target.value.length > 10) {
+                e.target.value = e.target.value.slice(0, 10);
+            }
+        });
+
+        document.getElementById('s12').addEventListener('input', function(e) {
+            if (e.target.value.length > 10) {
+                e.target.value = e.target.value.slice(0, 10);
+            }
+        });
+
+        document.getElementById('c10').addEventListener('input', function(e) {
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1);
+            }
+        });
+
+        function processTask10() {
+            const S = document.getElementById('s10').value;
+            const T = document.getElementById('t10').value;
+            const C = document.getElementById('c10').value;
+            
+            if (!S || !T || !C) {
+                alert('Please fill in all fields for Task 10');
+                return;
+            }
+            
+            fetch('/process_task10', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({S: S, T: T, C: C})
+            })
+            .then(response => response.json())
+            .then(data => {
+                let result = '<h3>Results:</h3>';
+                result += '<h4>Character Counts:</h4>';
+                for (let char in data.counts) {
+                    result += `<p>${char}: ${data.counts[char]}</p>`;
+                }
+                result += '<h4>Character Frequencies:</h4>';
+                for (let char in data.frequencies) {
+                    result += `<p>${char}: ${data.frequencies[char].toFixed(4)}</p>`;
+                }
+                result += `<h4>Modified Text:</h4><p>${data.modified_text}</p>`;
+                document.getElementById('result10').innerHTML = result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result10').innerHTML = '<p>Error processing request</p>';
+            });
+        }
+
+        function processTask11() {
+            const S = document.getElementById('s11').value;
+            const T = document.getElementById('t11').value;
+            
+            if (!S || !T) {
+                alert('Please fill in all fields for Task 11');
+                return;
+            }
+            
+            fetch('/process_task11', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({S: S, T: T})
+            })
+            .then(response => response.json())
+            .then(data => {
+                let result = `<h3>Results:</h3>`;
+                result += `<p><strong>Total words:</strong> ${data.word_count}</p>`;
+                result += '<h4>Words by starting character:</h4>';
+                for (let char in data.words_by_char) {
+                    result += `<p><strong>${char}:</strong> ${data.words_by_char[char].join(', ')}</p>`;
+                }
+                document.getElementById('result11').innerHTML = result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result11').innerHTML = '<p>Error processing request</p>';
+            });
+        }
+
+        function processTask12() {
+            const S = document.getElementById('s12').value;
+            const T = document.getElementById('t12').value;
+            const P = document.getElementById('p12').value.split(',').map(s => s.trim()).filter(s => s);
+            
+            if (!S || !T) {
+                alert('Please fill in all fields for Task 12');
+                return;
+            }
+            
+            fetch('/process_task12', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({S: S, T: T, P: P})
+            })
+            .then(response => response.json())
+            .then(data => {
+                let result = '<h3>Results:</h3>';
+                result += `<p><strong>Stop words removed:</strong> ${data.removed_count}</p>`;
+                result += `<p><strong>Filtered text:</strong> ${data.filtered_text}</p>`;
+                result += '<h4>Bigrams:</h4>';
+                if (data.bigrams.length > 0) {
+                    data.bigrams.forEach(bigram => {
+                        result += `<p>${bigram}</p>`;
+                    });
+                } else {
+                    result += '<p>No bigrams found</p>';
+                }
+                document.getElementById('result12').innerHTML = result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result12').innerHTML = '<p>Error processing request</p>';
+            });
+        }
+    </script>
 </body>
 </html>
